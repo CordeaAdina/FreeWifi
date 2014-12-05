@@ -101,6 +101,8 @@ public class MainActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // Get handles to the UI view objects
         mLatLng = (TextView) findViewById(R.id.lat_lng);
         mAddress = (TextView) findViewById(R.id.address);
