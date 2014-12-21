@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -85,11 +86,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
 
                 RegisterFragment regFr = new RegisterFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.hide(LoginFragment.this);
-                fragmentTransaction.add(R.id.fragment_container, regFr);
-                fragmentTransaction.commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, regFr).commit();
 
             }
         });
@@ -133,7 +130,6 @@ public class LoginFragment extends Fragment {
                     } else { // login successful
                         user = users.get(0);
                         String uId = user.getObjectId();
-
                         loginCallback.sendId(uId);
                     }
 

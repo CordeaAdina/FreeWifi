@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -33,6 +35,10 @@ public class RegisterFragment extends Fragment {
     private EditText usernameEditText;
     private EditText passEditText;
     private EditText emailEditText;
+    private EditText passReEditText;
+    private ImageView checkmark;
+
+    private  boolean isValidPass;
 
 
 
@@ -53,6 +59,44 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_register, container, false);
+
+
+        passReEditText = (EditText) (view.findViewById(R.id.editPassReID));
+        nameEditText = (EditText) (view.findViewById(R.id.editNameID));
+        usernameEditText = (EditText) (view.findViewById(R.id.editUNameID));
+        passEditText = (EditText) (view.findViewById(R.id.editPassID));
+        emailEditText = (EditText) (view.findViewById(R.id.editEmailID));
+        checkmark = (ImageView) view.findViewById(R.id.checkmarkID);
+
+
+
+        String name = nameEditText.getText().toString();
+        String username = usernameEditText.getText().toString();
+        String email = emailEditText.getText().toString();
+
+        isValidPass = false;
+
+
+        passReEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                String password = passEditText.getText().toString();
+                String passwordRetype = passReEditText.getText().toString();
+
+                if(!hasFocus){
+                    if (password.equals(passwordRetype)){
+                        isValidPass = true;
+                        checkmark.setImageResource(R.drawable.checkmark);
+                    }
+                    else {
+                        checkmark.setImageResource(R.drawable.checkfail);
+                        isValidPass = false;
+                    }
+                }
+            }
+        });
+
 
 
         mCancel = (Button) (view.findViewById(R.id.cancelID));
@@ -76,15 +120,10 @@ public class RegisterFragment extends Fragment {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nameEditText = (EditText) (view.findViewById(R.id.editNameID));
-                usernameEditText = (EditText) (view.findViewById(R.id.editUNameID));
-                passEditText = (EditText) (view.findViewById(R.id.editPassID));
-                emailEditText = (EditText) (view.findViewById(R.id.editEmailID));
 
-
+                final String password = passEditText.getText().toString();
                 final String name = nameEditText.getText().toString();
                 final String username = usernameEditText.getText().toString();
-                final String password = passEditText.getText().toString();
                 final String email = emailEditText.getText().toString();
 
 
@@ -102,8 +141,14 @@ public class RegisterFragment extends Fragment {
                 } else if (email.equals("")) {
                     invalid = true;
                     Toast.makeText(getActivity().getApplicationContext(), "Please enter your Email", Toast.LENGTH_SHORT).show();
+                } else if(isValidPass == false){
+                    Toast.makeText(getActivity().getApplicationContext(), "Please check your password!", Toast.LENGTH_SHORT).show();
                 } else if (invalid == false) {
 
+                 /*   SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPref", 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("wifiAdded", false);
+                    editor.commit();*/
 
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("User");
                     query.whereEqualTo("Username", username);

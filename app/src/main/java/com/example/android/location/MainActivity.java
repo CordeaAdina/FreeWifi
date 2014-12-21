@@ -1,6 +1,7 @@
 package com.example.android.location;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,22 +9,58 @@ import android.view.MenuItem;
 
 import com.example.android.location.fragments.AddWifiFragment;
 import com.example.android.location.fragments.LoginFragment;
+import com.example.android.location.fragments.MapLocationFragment;
 import com.parse.Parse;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends Activity implements LoginFragment.LoginClickInterface{
 
-
-
-
     public void sendId(String id){
-//        AddWifiFragment frag = (AddWifiFragment)
-//              getFragmentManager().findFragmentById(R.id.fragment_container);
-//        frag.addWifi(id);
 
-        AddWifiFragment addWifiFragment = new AddWifiFragment();
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment, "addWifiFragmentTag").commit();
-        addWifiFragment.addWifi(id);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("isLogged", true);
+        editor.putString("lastLoggedUserId", id);
+
+        SharedPreferences wifiAddedPref = getApplicationContext().getSharedPreferences("WifiAdded", 0);
+        SharedPreferences.Editor wifiAddedEditor = wifiAddedPref.edit();
+
+        Set<String> userIds;
+        userIds = pref.getStringSet("user", null);
+
+        if (userIds == null) {
+            userIds = new HashSet<String>();
+        }
+        if (!userIds.contains(id)) {
+            userIds.add(id);
+            editor.putStringSet("user", userIds);
+            wifiAddedEditor.putBoolean(id, false);
+            wifiAddedEditor.commit();
+            AddWifiFragment addWifiFragment = new AddWifiFragment();
+            getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag("loginFragment"));
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, addWifiFragment).commit();
+            addWifiFragment.addWifi(id);
+        }  else  if ( wifiAddedPref.getBoolean(id, false) )
+
+          {
+
+           getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapLocationFragment()).commit();
+
+
+        //  editor.putBoolean("wifiAdded", true);
+        //  getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
+          } else {
+              AddWifiFragment addWifiFragment = new AddWifiFragment();
+              getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
+               addWifiFragment.addWifi(id);
+          }
+
+          editor.commit();
     }
 
 
@@ -34,8 +71,25 @@ public class MainActivity extends Activity implements LoginFragment.LoginClickIn
 
         Parse.initialize(this, "Lrr5RvsXIoBVOopnyf61gy6yUztnq0qfshDoFZdq", "e6ZLVdTFWBU1w59movCMbzHDdU822cD6s1amDmyr");
 
-        LoginFragment fragment = new LoginFragment();
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences wifiAddedPref = getApplicationContext().getSharedPreferences("WifiAdded", 0); // 0 - for private mode
+
+        boolean isLogged = pref.getBoolean("isLogged",false);
+        if (!isLogged) {
+            LoginFragment fragment = new LoginFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "loginFragment").commit();
+        } else {
+            String lastId = pref.getString("lastLoggedUserId", null);
+            boolean wifiAdded = wifiAddedPref.getBoolean(lastId, false);
+            if (!wifiAdded) {
+                AddWifiFragment addWifiFragment = new AddWifiFragment();
+                getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag("loginFragment"));
+                getFragmentManager().beginTransaction().add(R.id.fragment_container, addWifiFragment).commit();
+                addWifiFragment.addWifi(lastId);
+            } else {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapLocationFragment()).commit();
+            }
+        }
     }
 
 
@@ -60,4 +114,5 @@ public class MainActivity extends Activity implements LoginFragment.LoginClickIn
 
         return super.onOptionsItemSelected(item);
     }
+
 }
