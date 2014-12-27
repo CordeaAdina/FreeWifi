@@ -2,56 +2,38 @@
 <pre-dex-items>
 
     <item
-        dex="D:\UTCN\GIT\FreeWifi\app\build\intermediates\pre-dexed\debug\classes-1eb3b32d36f879ca1f9b220ad4092e646f7d2f21.jar"
-        jar="D:\UTCN\GIT\FreeWifi\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\classes-00a968b1ff45211ca2b1e5ca2ba56cc79e9c0e9a.jar"
+        jar="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.1.71\classes.jar"
         jumboMode="false"
         revision="21.1.1"
-        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da"/>
     <item
-        dex="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-f9ece1f534082596b1f686027c4e4e9ad184a619.jar"
-        jar="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="21.1.1"
-        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
-    <item
-        dex="D:\UTCN\GIT\FreeWifi\app\build\intermediates\pre-dexed\debug\Parse-1.7.1-05e121ec5b7b265b12d408bbb0b85fae01540110.jar"
-        jar="D:\UTCN\GIT\FreeWifi\app\libs\Parse-1.7.1.jar"
-        jumboMode="false"
-        revision="21.1.1"
-        sha1="87c45f9f66da531a65f065ee32f603c7e6db1528"/>
-    <item
-        dex="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-a9cc1eebfc590c2ab5b35bb48c8d31f287131a78.jar"
-        jar="C:\Users\Adina Cordea\AppData\Local\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
-        jumboMode="false"
-        revision="21.1.1"
-        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
-    <item
-        dex="D:\UTCN\GIT\FreeWifi\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-acae90893325fa694b820bc5c1470875a5794e1b.jar"
-        jar="D:\UTCN\GIT\FreeWifi\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="21.1.1"
-        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
-    <item
-        dex="D:\UTCN\GIT\FreeWifi\app\build\intermediates\pre-dexed\debug\bolts-android-1.1.3-a3a3906b307ed072d1d176eb592d4c5c7e0e6b11.jar"
-        jar="D:\UTCN\GIT\FreeWifi\app\libs\bolts-android-1.1.3.jar"
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\bolts-android-1.1.3-9538ae55826f58831f7d1f2c0418fb0a717621c9.jar"
+        jar="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\libs\bolts-android-1.1.3.jar"
         jumboMode="false"
         revision="21.1.1"
         sha1="e61e3dfc57eaa5c97f9e7061db5608fc7d02d39e"/>
     <item
-        dex="D:\UTCN\GIT\FreeWifi\app\build\intermediates\pre-dexed\debug\classes-5adc7efab06dbe4f283a53195ff8e25b2e835638.jar"
-        jar="D:\UTCN\GIT\FreeWifi\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.1.71\classes.jar"
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-5fba28d890f2b913222efea6f41def36bc6ecbf5.jar"
+        jar="D:\Kituri\adt-bundle-windows-x86_64-20140702\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
         jumboMode="false"
         revision="21.1.1"
-        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da"/>
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
     <item
-        dex="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\pre-dexed\debug\classes-e209675f7bcfbe81d1e210184f5af842469bcd0f.jar"
-        jar="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.1.71\classes.jar"
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-2d9107946b1394db65b24758659e900fd4d45251.jar"
+        jar="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
         jumboMode="false"
         revision="21.1.1"
-        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da"/>
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
     <item
-        dex="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\pre-dexed\debug\classes-688a664981f83a21672900a449b5b28561c528ba.jar"
-        jar="C:\Users\Adina Cordea\Desktop\andr\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\Parse-1.7.1-0f42fa25f216f4417a316ae1abeddbdb5b734fe3.jar"
+        jar="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\libs\Parse-1.7.1.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="87c45f9f66da531a65f065ee32f603c7e6db1528"/>
+    <item
+        dex="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\pre-dexed\debug\classes-edfe824f458ec210ac1265c61fb7b7cb49e06e7b.jar"
+        jar="D:\Proiecte\FreeWifi.0.1\FreeWifi\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.1"
         sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
