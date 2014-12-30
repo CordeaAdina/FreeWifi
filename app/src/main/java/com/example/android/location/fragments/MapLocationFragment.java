@@ -20,8 +20,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.location.MainActivity;
 import com.example.android.location.R;
@@ -36,11 +39,22 @@ public class MapLocationFragment extends Fragment {
     private Button mShowWifi;
     private TextView tv;
     private StringBuilder sb;
-    List<ScanResult> scanList;
+    private WifiManager wifi;
+    private List<ScanResult> scanList;
+    private ListView listView;
+    private String[] sList;;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wifi = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+        if (wifi.isWifiEnabled() == false)
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+            wifi.setWifiEnabled(true);
+        }
+
+
 
     }
 
@@ -82,7 +96,7 @@ public class MapLocationFragment extends Fragment {
 
             }
         });
-        tv = (TextView) view.findViewById(R.id.textView);
+       tv = (TextView) view.findViewById(R.id.textView);
         mShowWifi = (Button) view.findViewById(R.id.showWifiID);
         mShowWifi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,15 +109,16 @@ public class MapLocationFragment extends Fragment {
 
                     @SuppressLint("UseValueOf") @Override
                     public void onReceive(Context context, Intent intent) {
-                        sb = new StringBuilder();
                         scanList = wifiManager.getScanResults();
-                        sb.append("\n  Number Of Wifi connections :" + " " +scanList.size()+"\n\n");
+                        sList = new String[scanList.size()];
+                        //listView = (ListView) getActivity().findViewById(R.id.list);
+                        sb = new StringBuilder();
                         for(int i = 0; i < scanList.size(); i++){
+                            sList[i] = (scanList.get(i)).toString();
                             sb.append(new Integer(i+1).toString() + ". ");
                             sb.append((scanList.get(i)).toString());
                             sb.append("\n\n");
                         }
-
                         tv.setText(sb);
                     }
 
