@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,20 +31,22 @@ import com.example.android.location.MainActivity;
 import com.example.android.location.R;
 import com.example.android.location.WifiNetworks;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+
+
+// incearca sa faci o functie in clicklistener, in care sa populezi lista, functia sa stransmita ca
+//parametru Stringul creat in wifiScan
 
 public class MapLocationFragment extends Fragment {
 
     private Button mLogout;
     private Button mShowWifi;
-    private TextView tv;
-    private StringBuilder sb;
     private WifiManager wifi;
     private List<ScanResult> scanList;
-    private ListView listView;
-    private String[] sList;;
-
+    private String[] sList;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +72,6 @@ public class MapLocationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
-
-
                 SharedPreferences pref = getActivity().getSharedPreferences("MyPref", 0); // 0 - for private mode
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putBoolean("isLogged", false);
@@ -96,7 +96,6 @@ public class MapLocationFragment extends Fragment {
 
             }
         });
-       tv = (TextView) view.findViewById(R.id.textView);
         mShowWifi = (Button) view.findViewById(R.id.showWifiID);
         mShowWifi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,30 +103,35 @@ public class MapLocationFragment extends Fragment {
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
                 final WifiManager wifiManager =
-                        (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);;
+                        (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 getActivity().registerReceiver(new BroadcastReceiver(){
 
                     @SuppressLint("UseValueOf") @Override
                     public void onReceive(Context context, Intent intent) {
                         scanList = wifiManager.getScanResults();
                         sList = new String[scanList.size()];
-                        //listView = (ListView) getActivity().findViewById(R.id.list);
-                        sb = new StringBuilder();
                         for(int i = 0; i < scanList.size(); i++){
                             sList[i] = (scanList.get(i)).toString();
-                            sb.append(new Integer(i+1).toString() + ". ");
-                            sb.append((scanList.get(i)).toString());
-                            sb.append("\n\n");
+                            populateList(sList);
                         }
-                        tv.setText(sb);
                     }
 
                 },filter);
                 wifiManager.startScan();
+
+
+
             }
         });
 
+
         return view;
+    }
+
+    public void populateList(String[] input){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.da_item, input);
+        ListView list = (ListView) getActivity().findViewById(R.id.listView);
+        list.setAdapter(adapter);
     }
 }
 
