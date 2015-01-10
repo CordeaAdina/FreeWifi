@@ -1,39 +1,27 @@
 package com.example.android.location.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.Handler;
-import android.provider.SyncStateContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.location.MainActivity;
-//import com.example.android.location.MapsActivity;
+import com.example.android.location.MapsActivity;
 import com.example.android.location.R;
-import com.example.android.location.WifiNetworks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -130,8 +118,8 @@ public class MapLocationFragment extends Fragment {
         mShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-           //     Intent i = new Intent(getActivity(), MapsActivity.class);
-           //     startActivity(i);
+                Intent i = new Intent(getActivity(), MapsActivity.class);
+                startActivity(i);
             }
         });
 
