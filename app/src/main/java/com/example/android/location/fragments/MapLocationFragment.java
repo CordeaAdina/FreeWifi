@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.location.MainActivity;
+//import com.example.android.location.MapsActivity;
 import com.example.android.location.R;
 import com.example.android.location.WifiNetworks;
 
@@ -44,6 +45,7 @@ public class MapLocationFragment extends Fragment {
 
     private Button mLogout;
     private Button mShowWifi;
+    private Button mShowMap;
     private WifiManager wifi;
     private List<ScanResult> scanList;
     private String[] sList;
@@ -124,6 +126,14 @@ public class MapLocationFragment extends Fragment {
             }
         });
 
+        mShowMap = (Button)view.findViewById(R.id.showMapID);
+        mShowMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+           //     Intent i = new Intent(getActivity(), MapsActivity.class);
+           //     startActivity(i);
+            }
+        });
 
         return view;
     }

@@ -1,11 +1,12 @@
 package com.example.android.location.fragments;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.app.Dialog;
+
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import com.example.android.location.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 
-public class AddWifiFragment extends Fragment {
+public class AddWifiFragment extends Fragment implements LocationListener,
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener{
 
     private EditText wifiNameEditText;
     private EditText wifiPassEditText;
@@ -29,6 +37,8 @@ public class AddWifiFragment extends Fragment {
     private String objectId;
     private ImageView checkmark;
     private  boolean isValidPass;
+
+    private LocationClient mLocationClient;
 
     //set id
     public void addWifi(String id){
@@ -45,6 +55,20 @@ public class AddWifiFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mLocationClient = new LocationClient(getActivity().getApplicationContext(), this, this);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mLocationClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        mLocationClient.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -105,6 +129,7 @@ public class AddWifiFragment extends Fragment {
                 wifiPassEditText = (EditText) (view.findViewById(R.id.editwifiPassID));
                 String wifiName = wifiNameEditText.getText().toString();
                 String wifiPass = wifiPassEditText.getText().toString();
+                ParseGeoPoint geoPoint ;
 
 
                 boolean invalid = false;
@@ -128,10 +153,14 @@ public class AddWifiFragment extends Fragment {
                 if(invalid == false) {
 
 
+                    double[] locations = getLocation();
+
+                    geoPoint = new ParseGeoPoint(locations[0], locations[1]);
+
                     ParseObject wifi = new ParseObject("Wifi");
                     wifi.put("WifiName", wifiName);
                     wifi.put("WifiPassword", wifiPass);
-
+                    wifi.put("GeoPoint", geoPoint);
                     wifi.put("UserId", objectId);
                     wifi.saveInBackground();
 
@@ -169,5 +198,62 @@ public class AddWifiFragment extends Fragment {
     }
 
 
+    @Override
+    public void onConnected(Bundle bundle) {
 
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    public double[] getLocation() {
+
+        double[] locations = new double[2];
+        // If Google Play Services is available
+        if (servicesConnected()) {
+
+            // Get the current location
+            Location currentLocation = mLocationClient.getLastLocation();
+
+            double latitude = currentLocation.getLatitude();
+            double longitude = currentLocation.getLongitude();
+
+            locations[0] = latitude;
+            locations[1] = longitude;
+        }
+        return locations;
+    }
+
+    private boolean servicesConnected() {
+
+        // Check that Google Play services is available
+        int resultCode =
+                GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity().getApplicationContext());
+
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode) {
+            // Continue
+            return true;
+            // Google Play services was not available for some reason
+        } else {
+            // Display an error dialog
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0);
+            if (dialog != null) {
+                Toast.makeText(getActivity(), "Google Play Services are not available", Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+    }
 }
