@@ -31,6 +31,7 @@
     <string name="latitude_longitude">%1$.8f, %2$.8f</string>
 
     <!-- Menu title -->
+    <string name="action_logout">Log out</string>
     <string name="action_settings">Settings</string>
 
     <!-- Labels -->

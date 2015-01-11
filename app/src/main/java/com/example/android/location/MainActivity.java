@@ -1,8 +1,10 @@
 package com.example.android.location;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,20 +49,20 @@ public class MainActivity extends Activity implements LoginFragment.LoginClickIn
             addWifiFragment.addWifi(id);
         }  else  if ( wifiAddedPref.getBoolean(id, false) )
 
-          {
+        {
 
-           getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapLocationFragment()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapLocationFragment()).commit();
 
 
-        //  editor.putBoolean("wifiAdded", true);
-        //  getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
-          } else {
-              AddWifiFragment addWifiFragment = new AddWifiFragment();
-              getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
-               addWifiFragment.addWifi(id);
-          }
+            //  editor.putBoolean("wifiAdded", true);
+            //  getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
+        } else {
+            AddWifiFragment addWifiFragment = new AddWifiFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, addWifiFragment).commit();
+            addWifiFragment.addWifi(id);
+        }
 
-          editor.commit();
+        editor.commit();
     }
 
 
@@ -108,7 +110,30 @@ public class MainActivity extends Activity implements LoginFragment.LoginClickIn
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+
+            SharedPreferences pref = this.getSharedPreferences("MyPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isLogged", false);
+            //  editor.putBoolean("wifiAdded",false);
+
+            editor.commit();
+
+            new Handler().post(new Runnable() {
+
+                @Override
+                public void run()
+                {
+                    Intent intent = getIntent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    overridePendingTransition(0, 0);
+                    finish();
+
+                    overridePendingTransition(0, 0);
+                    startActivity(intent);
+                }
+            });
+
             return true;
         }
 

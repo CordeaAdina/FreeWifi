@@ -15,54 +15,46 @@
 
 
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_alignTop="@+id/scrollView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/scrollView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
 
 
-        <Button
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Log out"
-            android:id="@+id/logoutID"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:textSize="18sp"
-            />
+            <Button
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="Show map"
+                android:id="@+id/showMapID"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:textSize="18sp"
+                />
 
-        <Button
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Show wifi"
-            android:id="@+id/showWifiID"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
-            android:textSize="18sp"
-            />
-
-        <Button
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Show map"
-            android:id="@+id/showMapID"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
-            android:textSize="18sp"
-            />
+            <Button
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="Show wifi"
+                android:id="@+id/showWifiID"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:textSize="18sp"
+                />
 
 
 
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="500dp"
-            android:id="@+id/listView"
-            android:layout_centerHorizontal="true" />
-    </LinearLayout>
+
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="500dp"
+                android:id="@+id/listView"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>
