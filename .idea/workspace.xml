@@ -57,8 +57,8 @@
       <file leaf-file-name="MapLocationFragment.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/location/fragments/MapLocationFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.0636942" vertical-offset="2667" max-vertical-offset="4862">
-              <caret line="223" column="113" selection-start-line="0" selection-start-column="0" selection-end-line="308" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.1687898" vertical-offset="2667" max-vertical-offset="4862">
+              <caret line="188" column="63" selection-start-line="188" selection-start-column="63" selection-end-line="188" selection-end-column="63" />
               <folding>
                 <element signature="e#2601#3293#0" expanded="true" />
                 <element signature="e#3273#3274#0" expanded="true" />
@@ -1044,6 +1044,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="localhost:50558" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_4_API_19" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="android.template.packageName">
@@ -1245,8 +1246,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1712,8 +1713,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/location/fragments/MapLocationFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0636942" vertical-offset="2667" max-vertical-offset="4862">
-          <caret line="223" column="113" selection-start-line="0" selection-start-column="0" selection-end-line="308" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.1687898" vertical-offset="2667" max-vertical-offset="4862">
+          <caret line="188" column="63" selection-start-line="188" selection-start-column="63" selection-end-line="188" selection-end-column="63" />
           <folding>
             <element signature="e#2601#3293#0" expanded="true" />
             <element signature="e#3273#3274#0" expanded="true" />
