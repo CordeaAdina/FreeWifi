@@ -2,11 +2,17 @@ package com.example.android.location;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -45,6 +51,7 @@ import com.parse.ParseQuery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +67,12 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
     private ArrayList<ParseGeoPoint> geopoints;
     HashMap<ParseGeoPoint, String>  hashMap;
     private Marker myMarker;
+    private MapLocationFragment markerMap;
 
+    private String capabilites;
+    private String security;
+    private List<ScanResult> scanList;
+    private String[] sList, sListS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +181,19 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
             public void onInfoWindowClick(Marker marker) {
                 Log.d("AAAAAAAAAAAAAAAAA","bun");
                 //In loc de asta trebuie pusa metoda in care te conectezi automat la wifi-ul respectiv(plasat la acel marker)
-                new Handler().post(new Runnable() {
+                ParseGeoPoint location = null;
+                for (ParseGeoPoint geop : geopoints) {
+                    if ((geop.getLatitude() == marker.getPosition().latitude) && (geop.getLongitude() == marker.getPosition().longitude)) {
+                        location = geop;
+                        break;
+                    }
+                }
+
+
+                checkTypeOfConnection(hashMap.get(location));
+
+
+               /* new Handler().post(new Runnable() {
 
                     @Override
                     public void run()
@@ -182,7 +206,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
                         overridePendingTransition(0, 0);
                         startActivity(intent);
                     }
-                });
+                }); */
             }
         });
 /*
@@ -373,9 +397,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
 
 
                     // Return the text
-                //    return addressText + "#" + location.getLatitude() + "#" + location.getLongitude();
-                         adr = addressText + "#" + l.getLatitude() + "#" + l.getLongitude();
-                        adresses.add(adr);
+                    //    return addressText + "#" + location.getLatitude() + "#" + location.getLongitude();
+                    adr = addressText + "#" + l.getLatitude() + "#" + l.getLongitude();
+                    adresses.add(adr);
                     // If there aren't any addresses, post a message
                 } else {
                     return null;
@@ -431,9 +455,199 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
                 locations.add(loc);
 
             }
-                (new GetAddressTask(this)).execute(locations);
+            (new GetAddressTask(this)).execute(locations);
 
         }
     }
 
+    public void checkTypeOfConnection(final String ssId){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        final WifiManager wifiManager =
+                (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        registerReceiver(new BroadcastReceiver() {
+
+            @SuppressLint("UseValueOf")
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                scanList = wifiManager.getScanResults();
+                sList = new String[scanList.size()];
+                sListS = new String[scanList.size()];
+                for (int i = 0; i < scanList.size(); i++) {
+                    String idCheck = scanList.get(i).SSID;
+                    if (idCheck.equals(ssId)) {
+                        capabilites = scanList
+                                .get(i).capabilities;
+                        break;
+                    }
+                }
+                security = capabilites.substring(1, 4);
+                if (security.equals("WPA")) {
+                    connectToWifiWPA(ssId);
+                } else if (security.equals("WEP")) {
+                    connectToWifiWEP(ssId);
+                }
+                Toast.makeText(getApplicationContext(), security, Toast.LENGTH_LONG).show();
+            }
+
+        }, filter);
+        wifiManager.startScan();
+    }
+
+    public void connectToWifiWPA(String input) {
+
+
+        String networkSSID = input;
+        String networkPass = "xxVLADEE";
+
+        WifiConfiguration conf = new WifiConfiguration();
+        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        conf.SSID = "\"" + networkSSID + "\"";
+
+        conf.preSharedKey = "\"" + networkPass + "\"";
+
+        System.out.println("CONF  " + conf.SSID + "   " + conf.preSharedKey);
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        Iterator it = list.iterator();
+        int ok = 0;
+        while (it.hasNext()) {
+            WifiConfiguration i = (WifiConfiguration) it.next();
+            System.out.println("haha   " + i.networkId + "  " + i.preSharedKey + "  " + i.SSID);
+            if (conf.SSID == i.SSID) {
+                ok = 1;
+            }
+
+        }
+
+        if (ok == 0)
+            wifiManager.addNetwork(conf);
+
+
+        for (WifiConfiguration i : list) {
+            System.out.println("am apasat pe " + i.SSID);
+
+            if (i.SSID != null && i.SSID.equals("\"" + input + "\"")) {
+                Toast.makeText(getApplicationContext(), "CONECTAM", Toast.LENGTH_LONG).show();
+                wifiManager.disconnect();
+                System.out.println("NET ID2 " + wifiManager.getConnectionInfo());
+                conf.networkId = i.networkId;
+                wifiManager.updateNetwork(conf);
+                wifiManager.enableNetwork(i.networkId, true);
+
+
+                wifiManager.reconnect();
+
+                System.out.println("NET ID5 " + wifiManager.getConnectionInfo());
+
+                if (wifiManager.getConnectionInfo().getNetworkId() > 0) {
+                    Toast.makeText(getApplicationContext(), "you are connected", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "a aparut o eroare", Toast.LENGTH_LONG).show();
+
+
+                    Intent intent=new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_EMAIL,"cretu_andrei_c@yahoo.com"); //mail catre serverul nostru
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Conection problem");
+                    intent.putExtra(Intent.EXTRA_TEXT, "Please verify wifi, it isn't working ");
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.setType("text/plain");
+                    try {
+                        startActivity(Intent.createChooser(intent, "Send mail"));
+                    }
+                    catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(getApplicationContext(), "nu s-a putut trimite mail-ul", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+    public void connectToWifiWEP(String input){
+
+
+
+        String networkSSID = input;
+        String networkPass = "xxVLADEE";
+
+        WifiConfiguration conf = new WifiConfiguration();
+        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        conf.SSID = "\"" + networkSSID + "\"";
+
+        conf.wepKeys[0] = "\"" + networkPass + "\"";
+        conf.wepTxKeyIndex = 0;
+        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        Iterator it = list.iterator();
+        int ok =0;
+        while(it.hasNext())
+        {
+            WifiConfiguration i = (WifiConfiguration)it.next();
+            if(conf.SSID==i.SSID)
+            {
+                ok=1;
+            }
+
+        }
+
+        if(ok==0)
+            wifiManager.addNetwork(conf);
+
+
+
+        for( WifiConfiguration i : list ){
+            System.out.println("am apasat pe " + i.SSID);
+
+            if(i.SSID != null && i.SSID.equals("\"" + input + "\"")) {
+                Toast.makeText(getApplicationContext(), "CONECTAM", Toast.LENGTH_LONG).show();
+                wifiManager.disconnect();
+                System.out.println("NET ID2 " +wifiManager.getConnectionInfo());
+                conf.networkId = i.networkId;
+                wifiManager.updateNetwork(conf);
+                wifiManager.enableNetwork(i.networkId, true);
+
+
+                wifiManager.reconnect();
+
+                System.out.println("NET ID5 " +wifiManager.getConnectionInfo());
+
+                if(wifiManager.getConnectionInfo().getNetworkId() > 0)
+                {
+                    Toast.makeText(getApplicationContext(), "you are connected", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "a aparut o eroare", Toast.LENGTH_LONG).show();
+
+                    Intent intent=new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_EMAIL,"cretu_andrei_c@yahoo.com"); //mail catre serverul nostru
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Conection problem");
+                    intent.putExtra(Intent.EXTRA_TEXT, "Please verify wifi, it isn't working ");
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.setType("text/plain");
+                    try {
+                        startActivity(Intent.createChooser(intent, "Send mail"));
+                    }
+                    catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(getApplicationContext(), "nu s-a putut trimite mail-ul", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+
+
+
+            }
+
+        }
+
+    }
 }
