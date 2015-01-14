@@ -15,34 +15,26 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
-import android.provider.SyncStateContract;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
-import com.example.android.location.fragments.AddWifiFragment;
 import com.example.android.location.fragments.MapLocationFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -190,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
                 }
 
 
-                checkTypeOfConnection(hashMap.get(location));
+                extractWifiPass(hashMap.get(location));
 
 
                /* new Handler().post(new Runnable() {
@@ -460,7 +452,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
         }
     }
 
-    public void checkTypeOfConnection(final String ssId){
+    public void checkTypeOfConnection(final String ssId,final String pass){
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         final WifiManager wifiManager =
@@ -483,9 +475,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
                 }
                 security = capabilites.substring(1, 4);
                 if (security.equals("WPA")) {
-                    connectToWifiWPA(ssId);
+                    connectToWifiWPA(ssId,pass);
                 } else if (security.equals("WEP")) {
-                    connectToWifiWEP(ssId);
+                    connectToWifiWEP(ssId,pass);
                 }
                 Toast.makeText(getApplicationContext(), security, Toast.LENGTH_LONG).show();
             }
@@ -494,11 +486,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
         wifiManager.startScan();
     }
 
-    public void connectToWifiWPA(String input) {
+    public void connectToWifiWPA(String input,String pass) {
 
 
         String networkSSID = input;
-        String networkPass = "xxVLADEE";
+        String networkPass = pass;
 
         WifiConfiguration conf = new WifiConfiguration();
         WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -570,12 +562,12 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
 
 
 
-    public void connectToWifiWEP(String input){
+    public void connectToWifiWEP(String input, String pass){
 
 
 
         String networkSSID = input;
-        String networkPass = "xxVLADEE";
+        String networkPass = pass;
 
         WifiConfiguration conf = new WifiConfiguration();
         WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -648,6 +640,40 @@ public class MapsActivity extends FragmentActivity implements LocationListener,
             }
 
         }
+
+    }
+
+
+    public void extractWifiPass(String Name)
+    {
+        String pass = "";
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Wifi");
+        query.whereEqualTo("WifiName", Name);
+        final String name2 = Name;
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> users, ParseException e) {
+                if (e == null) {
+                    // your logic here
+
+                    if (users.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Wifi not in Data Base", Toast.LENGTH_SHORT).show();
+
+                    } else { // login successful
+
+
+                        for (ParseObject wifi : users) {
+                            //if(wifi.getString("WifiName").equals(name2))
+                            checkTypeOfConnection(name2, wifi.getString("WifiPassword"));
+                            //   break;
+                        }
+                    }
+
+                } else {
+                    // handle Parse Exception here
+
+                }
+            }
+        });
 
     }
 }
