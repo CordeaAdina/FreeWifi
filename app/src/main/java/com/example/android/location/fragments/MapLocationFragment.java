@@ -39,9 +39,12 @@ public class MapLocationFragment extends Fragment {
     private Button mShowMap;
     private WifiManager wifi;
     private List<ScanResult> scanList;
-    private String[] sList;
+    private String[] sList, sListS;
     private String ssId;
+    private String capabilites;
+    private String security;
     private ListView list;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,7 @@ public class MapLocationFragment extends Fragment {
                     public void onReceive(Context context, Intent intent) {
                         scanList = wifiManager.getScanResults();
                         sList = new String[scanList.size()];
+                        sListS = new String[scanList.size()];
                         for (int i = 0; i < scanList.size(); i++) {
                             sList[i] = scanList.get(i).SSID;
                             System.out.println("aka " + scanList.get(i).SSID);
@@ -91,6 +95,7 @@ public class MapLocationFragment extends Fragment {
 
             }
         });
+
 
         mShowMap = (Button)view.findViewById(R.id.showMapID);
         mShowMap.setOnClickListener(new View.OnClickListener() {
@@ -113,8 +118,6 @@ public class MapLocationFragment extends Fragment {
 
     public void registerClickCallback() {
         ListView list = (ListView) getActivity().findViewById(R.id.listView);
-        // System.out.println(list.getAdapter());
-        System.out.println("am ajuns");
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
@@ -122,33 +125,52 @@ public class MapLocationFragment extends Fragment {
                 ssId = textView.getText().toString();
                 Log.e("logcat", "am apasat");
                 Toast.makeText(getActivity().getApplicationContext(), "You clicked " + ssId , Toast.LENGTH_LONG).show();
-                connectToWifi(ssId);
+                checkTypeOfConnection(ssId);
             }
         });
     }
 
-    public void connectToWifi(String input){
+    public void checkTypeOfConnection(final String ssId){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        final WifiManager wifiManager =
+                (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        getActivity().registerReceiver(new BroadcastReceiver() {
 
+            @SuppressLint("UseValueOf")
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                scanList = wifiManager.getScanResults();
+                sList = new String[scanList.size()];
+                sListS = new String[scanList.size()];
+                for (int i = 0; i < scanList.size(); i++) {
+                    String idCheck = scanList.get(i).SSID;
+                    if(idCheck.equals(ssId)){
+                        capabilites = scanList
+                                .get(i).capabilities;
+                        break;
+                    }
+                }
+                security = capabilites.substring(1,4);
+                if(security.equals("WPA")){
+                    connectToWifiWPA(ssId);
+                }
+                else if(security.equals("WEP")){
+                    connectToWifiWEP(ssId);
+                }
+                Toast.makeText(getActivity().getApplicationContext(), security, Toast.LENGTH_LONG).show();
+            }
 
-    /*    final WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-        final WifiConfiguration config = new WifiConfiguration();
-        config.SSID = "\""+input+"\"";
-        config.preSharedKey = "\"xxVLADEE\"";
-        config.status = WifiConfiguration.Status.ENABLED;
+        }, filter);
         wifiManager.startScan();
+    }
 
-        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+    public void connectToWifiWPA(String input){
 
-        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-        if (!wifiManager.isWifiEnabled()){
-            wifiManager.setWifiEnabled(true);
-            int networkId = wifiManager.addNetwork(config);
-            wifiManager.enableNetwork(networkId, true);
-        }
-*/
+
 
         String networkSSID = input;
-        String networkPass = "camera113";
+        String networkPass = "xxVLADEE";
 
         WifiConfiguration conf = new WifiConfiguration();
         WifiManager wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -157,14 +179,6 @@ public class MapLocationFragment extends Fragment {
 
         conf.preSharedKey = "\""+ networkPass +"\"";
 
-      /*  conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        conf.status = WifiConfiguration.Status.ENABLED;
-
-        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-
-        conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);*/
-
-        //System.out.println("NET ID: " + id + "    " + id2);
         System.out.println("CONF  " +conf.SSID + "   " + conf.preSharedKey);
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
@@ -186,34 +200,17 @@ public class MapLocationFragment extends Fragment {
 
 
 
-
-
-
         for( WifiConfiguration i : list ){
-            // Toast.makeText(getActivity().getApplicationContext(), "intrat in for", Toast.LENGTH_LONG).show();
             System.out.println("am apasat pe " + i.SSID);
 
             if(i.SSID != null && i.SSID.equals("\"" + input + "\"")) {
                 Toast.makeText(getActivity().getApplicationContext(), "CONECTAM", Toast.LENGTH_LONG).show();
-                System.out.println("NET ID1 " +wifiManager.getConnectionInfo());
-
                 wifiManager.disconnect();
-
-                //conf.networkId = i.networkId;
-                //conf.networkId = i.networkId;
-
                 System.out.println("NET ID2 " +wifiManager.getConnectionInfo());
-
-                //System.out.println("NET ID3 " + i.networkId + "  " + conf.networkId );
                 conf.networkId = i.networkId;
-                //System.out.println("CONF ID " + conf.networkId);
                 wifiManager.updateNetwork(conf);
-
                 wifiManager.enableNetwork(i.networkId, true);
-                //System.out.println("NET ID4 " +conf.preSharedKey + "   " +   "  " + conf.SSID);
 
-
-                System.out.println("NET ID4 " +wifiManager.getConnectionInfo());
 
                 wifiManager.reconnect();
 
@@ -233,9 +230,79 @@ public class MapLocationFragment extends Fragment {
             }
 
         }
-        Toast.makeText(getActivity().getApplicationContext(), "nu am gasit wifi", Toast.LENGTH_LONG).show();
 
     }
+
+    public void connectToWifiWEP(String input){
+
+
+
+        String networkSSID = input;
+        String networkPass = "xxVLADEE";
+
+        WifiConfiguration conf = new WifiConfiguration();
+        WifiManager wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        conf.SSID = "\"" + networkSSID + "\"";
+
+        conf.wepKeys[0] = "\"" + networkPass + "\"";
+        conf.wepTxKeyIndex = 0;
+        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        Iterator it = list.iterator();
+        int ok =0;
+        while(it.hasNext())
+        {
+            WifiConfiguration i = (WifiConfiguration)it.next();
+            if(conf.SSID==i.SSID)
+            {
+                ok=1;
+            }
+
+        }
+
+        if(ok==0)
+            wifiManager.addNetwork(conf);
+
+
+
+        for( WifiConfiguration i : list ){
+            System.out.println("am apasat pe " + i.SSID);
+
+            if(i.SSID != null && i.SSID.equals("\"" + input + "\"")) {
+                Toast.makeText(getActivity().getApplicationContext(), "CONECTAM", Toast.LENGTH_LONG).show();
+                wifiManager.disconnect();
+                System.out.println("NET ID2 " +wifiManager.getConnectionInfo());
+                conf.networkId = i.networkId;
+                wifiManager.updateNetwork(conf);
+                wifiManager.enableNetwork(i.networkId, true);
+
+
+                wifiManager.reconnect();
+
+                System.out.println("NET ID5 " +wifiManager.getConnectionInfo());
+
+                if(wifiManager.getConnectionInfo().getNetworkId() > 0)
+                {
+                    Toast.makeText(getActivity().getApplicationContext(), "you are connected", Toast.LENGTH_LONG).show();
+                }
+                else
+                    Toast.makeText(getActivity().getApplicationContext(), "a aparut o eroare", Toast.LENGTH_LONG).show();
+
+                break;
+
+
+
+            }
+
+        }
+
+    }
+
+
+
 }
 
 
