@@ -130,8 +130,25 @@ public class MapLocationFragment extends Fragment {
     public void connectToWifi(String input){
 
 
+    /*    final WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+        final WifiConfiguration config = new WifiConfiguration();
+        config.SSID = "\""+input+"\"";
+        config.preSharedKey = "\"xxVLADEE\"";
+        config.status = WifiConfiguration.Status.ENABLED;
+        wifiManager.startScan();
+
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        if (!wifiManager.isWifiEnabled()){
+            wifiManager.setWifiEnabled(true);
+            int networkId = wifiManager.addNetwork(config);
+            wifiManager.enableNetwork(networkId, true);
+        }
+*/
+
         String networkSSID = input;
-        String networkPass = "camera113";
+        String networkPass = "xxVLADEE";
 
         WifiConfiguration conf = new WifiConfiguration();
         WifiManager wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -140,21 +157,32 @@ public class MapLocationFragment extends Fragment {
 
         conf.preSharedKey = "\""+ networkPass +"\"";
 
-        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+      /*  conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        conf.status = WifiConfiguration.Status.ENABLED;
 
-        wifiManager.addNetwork(conf);
+        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+        conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);*/
 
         //System.out.println("NET ID: " + id + "    " + id2);
         System.out.println("CONF  " +conf.SSID + "   " + conf.preSharedKey);
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         Iterator it = list.iterator();
+        int ok =0;
         while(it.hasNext())
         {
             WifiConfiguration i = (WifiConfiguration)it.next();
             System.out.println("haha   " + i.networkId + "  " + i.preSharedKey + "  " + i.SSID);
+            if(conf.SSID==i.SSID)
+                ok=1;
 
         }
+
+         if(ok==0)
+             wifiManager.addNetwork(conf);
+
+
 
 
 
@@ -165,19 +193,25 @@ public class MapLocationFragment extends Fragment {
 
             if(i.SSID != null && i.SSID.equals("\"" + input + "\"")) {
                 Toast.makeText(getActivity().getApplicationContext(), "CONECTAM", Toast.LENGTH_LONG).show();
+                System.out.println("NET ID1 " +wifiManager.getConnectionInfo());
+
                 wifiManager.disconnect();
 
-                System.out.println("NET ID2 " +wifiManager.getConnectionInfo() + "  " + i.SSID);
                 //conf.networkId = i.networkId;
-                System.out.println("NET ID2 " +wifiManager.getConnectionInfo());
                 //conf.networkId = i.networkId;
 
-                System.out.println("NET ID3 " + i.networkId + "  " + conf.networkId );
-                //conf.networkId = i.networkId;
+                System.out.println("NET ID2 " +wifiManager.getConnectionInfo());
+
+                //System.out.println("NET ID3 " + i.networkId + "  " + conf.networkId );
+                conf.networkId = i.networkId;
+                //System.out.println("CONF ID " + conf.networkId);
+                wifiManager.updateNetwork(conf);
 
                 wifiManager.enableNetwork(i.networkId, true);
+                //System.out.println("NET ID4 " +conf.preSharedKey + "   " +   "  " + conf.SSID);
+
+
                 System.out.println("NET ID4 " +wifiManager.getConnectionInfo());
-                System.out.println("NET ID4 " +conf.preSharedKey + "   " +   "  " + conf.SSID);
 
                 wifiManager.reconnect();
 
