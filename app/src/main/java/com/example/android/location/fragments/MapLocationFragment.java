@@ -148,7 +148,7 @@ public class MapLocationFragment extends Fragment {
 */
 
         String networkSSID = input;
-        String networkPass = "xxVLADEE";
+        String networkPass = "camera113";
 
         WifiConfiguration conf = new WifiConfiguration();
         WifiManager wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -175,7 +175,9 @@ public class MapLocationFragment extends Fragment {
             WifiConfiguration i = (WifiConfiguration)it.next();
             System.out.println("haha   " + i.networkId + "  " + i.preSharedKey + "  " + i.SSID);
             if(conf.SSID==i.SSID)
+            {
                 ok=1;
+            }
 
         }
 
